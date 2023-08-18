@@ -56,6 +56,32 @@ class SQLiteDatabase
         }
     }
 
+    public function tableExists(string $tableName): bool
+    {
+        $sql = "SELECT count(*) FROM sqlite_master WHERE type='table' AND name=:tableName";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':tableName' => $tableName]);
+        return $stmt->fetchColumn() > 0;
+    }
+
+    public function getColumns(string $tableName): array
+    {
+        if (!$this->tableExists($tableName)) {
+            throw new Exception('Table does not exist.');
+        }
+
+        $sql = "PRAGMA table_info(:tableName)";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':tableName' => $tableName]);
+
+        $columns = [];
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $column) {
+            $columns[] = $column['name'];
+        }
+
+        return $columns;
+    }
+
     public function getPDO(): PDO
     {
         return $this->pdo;

@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace TimAlexander\Sairch\module\BetterSQL;
 
-use InstantCache;
+use TimAlexander\Sairch\module\DB\DB;
+use TimAlexander\Sairch\module\Factory\Factory;
+use TimAlexander\Sairch\module\InstantCache\InstantCache;
 use TimAlexander\Sairch\module\QueryBuilder\QueryBuilder;
-use TimAlexander\Sairch\module\SQLiteDatabase\SQLiteDatabase;
 
 class BetterSQL
 {
@@ -16,8 +17,7 @@ class BetterSQL
     public function __construct(
         private readonly string $table = '',
     ) {
-        $sqlitedb = new SQLiteDatabase();
-        $this->pdo = $sqlitedb->getPDO();
+        $this->pdo = DB::getDriver();
         $this->queryBuilder = self::generateQueryBuilder();
     }
 

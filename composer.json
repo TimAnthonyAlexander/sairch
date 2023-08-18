@@ -12,5 +12,8 @@
             "email": "info@timanthonyalexander.de"
         }
     ],
+    "scripts": {
+        "migrations": "php ./scripts/migrations.php"
+    },
     "require": {}
 }

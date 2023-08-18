@@ -3,6 +3,7 @@
 namespace TimAlexander\Sairch\module\MigrationConfig;
 
 use JsonException;
+use TimAlexander\Sairch\module\ExecutedMigrationConfig\ExecutedMigrationConfig;
 use TimAlexander\Sairch\module\ProjectConfig\ProjectConfig;
 use TimAlexander\Sairch\module\QueryBuilder\QueryBuilder;
 
