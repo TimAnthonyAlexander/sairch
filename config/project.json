@@ -2,5 +2,20 @@
     "paths": [
         "~",
         "\/Applications"
+    ],
+    "ignoreExtensions": [
+        "7z",
+        "avi",
+        "ttf",
+        "wav",
+        "webm",
+        "webp",
+        "woff",
+        "woff2",
+        "xls",
+        "xlsx",
+        "xml",
+        "zip",
+        "dmg"
     ]
 }

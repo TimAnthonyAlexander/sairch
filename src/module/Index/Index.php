@@ -8,11 +8,17 @@ use TimAlexander\Sairch\model\FileIndex\FileIndexModel;
 use TimAlexander\Sairch\module\GetSystem\GetSystem;
 use TimAlexander\Sairch\module\ProjectConfig\ProjectConfig;
 
+ini_set('memory_limit', '4096M');
+ini_set('max_execution_time', '0');
+
+error_reporting(E_ALL & ~E_WARNING);
+
 class Index
 {
     public readonly int $system;
     public readonly array $paths;
     public array $files = [];
+    private readonly array $ignoreExtensions;
 
     public function __construct()
     {
@@ -21,6 +27,8 @@ class Index
 
         $projectConfig = new ProjectConfig();
         $this->paths = $projectConfig->getConfigItem('paths', $this->createDefaultPaths());
+
+        $this->ignoreExtensions = $projectConfig->getConfigItem('ignoreExtensions', $this->createDefaultIgnoreExtensions());
     }
 
     private function createDefaultPaths(): array
@@ -42,6 +50,25 @@ class Index
         };
     }
 
+    private function createDefaultIgnoreExtensions(): array
+    {
+        return [
+            '7z',
+            'avi',
+            'ttf',
+            'wav',
+            'webm',
+            'webp',
+            'woff',
+            'woff2',
+            'xls',
+            'xlsx',
+            'xml',
+            'zip',
+            'dmg'
+        ];
+    }
+
     public function index(): void
     {
         foreach ($this->paths as $path) {
@@ -61,13 +88,43 @@ class Index
             }
 
             $filePath = $path . DIRECTORY_SEPARATOR . $file;
-            $fileInfo = pathinfo($filePath);
             $fileType = filetype($filePath);
+            $fileInfo = pathinfo($filePath);
             $fileSize = filesize($filePath);
-            $fileModified = filemtime($filePath);
-            $fileAccessed = fileatime($filePath);
-            $fileCreated = filectime($filePath);
-            $fileHash = hash_file('sha256', $filePath);
+            $fileExtension = $fileInfo['extension'] ?? '';
+
+            if (in_array($fileExtension, $this->ignoreExtensions, true)) {
+                continue;
+            }
+
+            try {
+                $fileModified = filemtime($filePath);
+                $fileAccessed = fileatime($filePath);
+                $fileCreated = filectime($filePath);
+            } catch (\Throwable) {
+                $fileModified = 0;
+                $fileAccessed = 0;
+                $fileCreated = 0;
+            }
+
+            if (!is_readable($path . DIRECTORY_SEPARATOR . $file)) {
+                continue;
+            }
+
+            if (is_dir($filePath) || $fileType === 'dir') {
+                $this->indexPath($filePath);
+                $fileHash = '';
+            } else {
+                $fileHash = md5($filePath . $fileSize . $fileModified . $fileAccessed . $fileCreated);
+            }
+
+            if (FileIndexModel::existsById($fileHash)) {
+                continue;
+            }
+
+            if ($fileHash === false) {
+                continue;
+            }
 
             $fileModified = date('c', $fileModified);
             $fileAccessed = date('c', $fileAccessed);
@@ -79,7 +136,7 @@ class Index
 
             $fileIndex->path = $filePath;
             $fileIndex->name = basename($filePath);
-            $fileIndex->extension = $fileInfo['extension'];
+            $fileIndex->extension = $fileExtension;
             $fileIndex->type = $fileType;
             $fileIndex->size = $fileSize;
             $fileIndex->modified = $fileModified;
@@ -89,10 +146,6 @@ class Index
             $fileIndex->save();
 
             $this->files[] = $fileIndex;
-
-            if ($fileType === 'dir') {
-                $this->indexPath($filePath);
-            }
         }
     }
 }
