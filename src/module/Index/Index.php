@@ -78,7 +78,7 @@ class Index
             );
 
             $fileIndex->path = $filePath;
-            $fileIndex->name = $fileInfo['filename'];
+            $fileIndex->name = basename($filePath);
             $fileIndex->extension = $fileInfo['extension'];
             $fileIndex->type = $fileType;
             $fileIndex->size = $fileSize;
@@ -93,9 +93,6 @@ class Index
             if ($fileType === 'dir') {
                 $this->indexPath($filePath);
             }
-
-            print "One file indexed.\n";
-            die;
         }
     }
 }

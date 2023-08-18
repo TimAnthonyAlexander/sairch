@@ -16,6 +16,7 @@ class FileIndexModel extends EntityModel
     public string $modified = '';
     public string $accessed = '';
     public string $created = '';
+    public string $updated;
     public string $tags = '';
     public string $notes = '';
     public string $metadata = '';

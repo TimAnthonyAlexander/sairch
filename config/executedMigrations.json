@@ -1,5 +1,0 @@
-{
-    "executed": [
-        "CREATE TABLE IF NOT EXISTS fileindex (id varchar(255) NOT NULL, `path` longtext NOT NULL DEFAULT (''), `name` longtext NOT NULL DEFAULT (''), `extension` longtext NOT NULL DEFAULT (''), `type` longtext NOT NULL DEFAULT (''), `size` bigint NOT NULL DEFAULT 0, `modified` longtext NOT NULL DEFAULT (''), `accessed` longtext NOT NULL DEFAULT (''), `created` datetime DEFAULT CURRENT_TIMESTAMP, `tags` longtext NOT NULL DEFAULT (''), `notes` longtext NOT NULL DEFAULT (''), `metadata` longtext NOT NULL DEFAULT (''), PRIMARY KEY (id)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"
-    ]
-}
