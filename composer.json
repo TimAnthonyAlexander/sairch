@@ -1,0 +1,16 @@
+{
+    "name": "tim.alexander/sairch",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "TimAlexander\\Sairch\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Tim Anthony Alexander",
+            "email": "info@timanthonyalexander.de"
+        }
+    ],
+    "require": {}
+}
